@@ -1,9 +1,10 @@
-from tkinter import Tk, Label, PhotoImage, Frame, Button
+from tkinter import Tk, Label, PhotoImage, Frame, Entry
 from PIL import ImageTk, Image
 
 
 title_font = ('Comic Sans MS', 30)
 my_font1 = ('Comic Sans MS', 13)
+my_font2 = ('Comic Sans MS', 10)
 
 selected = 0
 gates_dict = {0: 'AND', 1: 'NAND', 2: 'OR', 3: 'NOR', 4: 'XOR', 5: 'XNOR'}
@@ -34,8 +35,8 @@ def run():
     # Instructions
     main_label = Label(bg='#d4dca9')
 
-    title = Label(main_label, text='Logical Gates NN', fg='#595775', bg='#d4dca9', font=title_font)
-    title.pack(pady=15, padx=270)
+    title = Label(main_label, padx=179, pady=10, text='Logical Gates NN', fg='#595775', bg='#ebf2ea', font=title_font)
+    title.pack(pady=(20, 0), padx=40)
 
     Label(main_label, text='Choose from these gates to learn', fg='#bf9d7a', font=my_font1, padx=205).pack()
 
@@ -86,9 +87,32 @@ def run():
 
     gates.pack()
 
-    controls = Label(main_label, width=50, height=10, padx=5, pady=5)
+    controls = Label(main_label)
     # Controls
-    controls.pack(pady=10)
+    outer_fence = Frame(controls, padx=40, width=40, height=40, pady=5, borderwidth=2, relief='solid')
+
+    Label(outer_fence, text='Other Inputs and Training Results...', borderwidth=2, relief='solid').grid(column=0, row=0)
+
+    testing_area = Frame(outer_fence, padx=40, pady=5, borderwidth=2, relief='solid')
+    Label(testing_area, text='Enter inputs for testing', font=my_font1, fg='#bf9d7a', borderwidth=2,
+          relief='solid').pack(pady=(10, 2))
+    testing_input = Frame(testing_area, padx=5, pady=5, borderwidth=2, relief='solid')
+    Label(testing_input, text='X1 = ', font=my_font2).grid(column=0, row=0)
+    x1 = Entry(testing_input, fg='#0abda0', width=15)
+    x1.grid(column=1, row=0)
+
+    Label(testing_input, text='X2 = ', font=my_font2).grid(column=0, row=1)
+    x2 = Entry(testing_input, fg='#0abda0', width=15)
+    x2.grid(column=1, row=1)
+
+    Label(testing_input, text='Result = ', font=my_font2).grid(column=0, row=2)
+    result = Entry(testing_input, fg='#0abda0', width=15, state='disabled')
+    result.grid(column=1, row=2)
+    testing_input.pack()
+    testing_area.grid(column=1, row=0, padx=(20, 0))
+
+    outer_fence.pack(padx=52, pady=20)
+    controls.pack(pady=(0, 25))
 
     main_label.grid(column=1, row=0, sticky='N')
 
