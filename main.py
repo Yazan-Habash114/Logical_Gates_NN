@@ -28,6 +28,15 @@ def change_frame_colour(frames, index):
     if gates_dict[selected] == 'AND':
         w1, w2 = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 0, 0, 1])
         print(w1, w2)
+    elif gates_dict[selected] == 'NAND':
+        w1, w2 = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [1, 1, 1, 0])
+        print(w1, w2)
+    elif gates_dict[selected] == 'OR':
+        w1, w2 = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 1, 1, 1])
+        print(w1, w2)
+    elif gates_dict[selected] == 'NOR':
+        w1, w2 = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [1, 0, 0, 0])
+        print(w1, w2)
 
 
 def run():

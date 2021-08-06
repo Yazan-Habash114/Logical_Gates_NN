@@ -1,4 +1,4 @@
-from perceptron import Perceptron
+from Perceptron import Perceptron
 
 
 def my_formatter(num):
