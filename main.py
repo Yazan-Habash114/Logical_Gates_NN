@@ -1,5 +1,6 @@
 from tkinter import Tk, Label, PhotoImage, Frame, Entry
 from PIL import ImageTk, Image
+import normal_gates as ng
 
 
 title_font = ('Comic Sans MS', 30)
@@ -23,6 +24,10 @@ def change_frame_colour(frames, index):
     frames[index].config(bd=4, bg='#0abda0')
     frames[index].grid(column=index, row=0, padx=4, pady=4)
     print(gates_dict[selected])
+
+    if gates_dict[selected] == 'AND':
+        w1, w2 = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 0, 0, 1])
+        print(w1, w2)
 
 
 def run():
