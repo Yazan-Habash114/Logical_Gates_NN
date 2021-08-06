@@ -14,7 +14,7 @@ class Perceptron:
         self.threshold = 2 * random.random() - 1  # So weight is in (-1, 1)
         # self.weight = [0.3]
         # self.threshold = 0.2
-        self.activation_fun = functions.step
+        self.activation_fun = functions.step  # Best are (Step, Sigmoid), ReLU is acceptable!
         self.out = 0.0
 
     def add_input(self):

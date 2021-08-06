@@ -21,14 +21,17 @@ def learn(in_data, out_data):
             print(f'{p.In[0]}    {p.In[1]}')
             p.get_output()
             e = my_formatter(out_data[i] - p.out)
-            errors.append(e ** 2)
+            errors.append(my_formatter(e ** 2))
             print(f'a is {p.out}, error = {e}')
 
             for j in range(len(p.weight)):
                 tmp = p.weight[j]
                 p.weight[j] += alpha * p.In[j] * e
                 p.weight[j] = my_formatter(p.weight[j])
+                p.threshold += alpha * p.wIn * e
+                p.threshold = my_formatter(p.threshold)
                 print(f'Weight is updated by, {my_formatter(p.weight[j]-tmp)}, so weight[{j}] = {p.weight[j]}')
+                print(f'New threshold = {p.threshold}')
 
         MSE = 0.0
         for error in errors:
@@ -38,9 +41,9 @@ def learn(in_data, out_data):
         print(f'errors = {errors}')
         errors.clear()
         print(f'MSE = {MSE}, epoch = {epoch + 1}')
-        if MSE <= 0.001:
+        if MSE <= 0.0001:
             break
-        print('\n')
+        print(f'Threshold = {p.threshold}\n')
 
     return p.weight[0], p.weight[1]
 

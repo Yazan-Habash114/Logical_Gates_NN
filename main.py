@@ -105,9 +105,9 @@ def run():
     # Controls
     outer_fence = Frame(controls, padx=40, width=40, height=40, pady=5, borderwidth=2, relief='solid')
 
-    Label(outer_fence, text='Other Inputs and Training Results...', borderwidth=2, relief='solid').grid(column=0, row=0)
+    Label(outer_fence, text='Other Inputs and Training Results...', borderwidth=6, relief='solid').grid(column=0, row=0)
 
-    testing_area = Frame(outer_fence, padx=40, pady=5, borderwidth=2, relief='solid')
+    testing_area = Frame(outer_fence, padx=40, pady=5, borderwidth=6, relief='solid')
     Label(testing_area, text='Enter inputs for testing', font=my_font1, fg='#bf9d7a', borderwidth=2,
           relief='solid').pack(pady=(10, 2))
     testing_input = Frame(testing_area, padx=5, pady=5, borderwidth=2, relief='solid')
