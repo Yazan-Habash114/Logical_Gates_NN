@@ -17,9 +17,18 @@ for hidden in hidden_layer:
     hidden.weight[0], hidden.weight[1] = random.uniform(-1.2, 1.2), random.uniform(-1.2, 1.2)
     print("weights are {0}".format(hidden.weight), hidden.threshold)
 
+# hidden_layer[0].weight[0] = 0.5
+# hidden_layer[0].weight[1] = 0.4
+# hidden_layer[0].threshold = 0.8
+#
+# hidden_layer[1].weight[0] = 0.9
+# hidden_layer[1].weight[1] = 1.0
+# hidden_layer[1].threshold = -0.1
+
 out_perceptron = Perceptron()
 out_perceptron.add_input()
-out_perceptron.weight[0], out_perceptron.weight[1] = random.uniform(-1.2, 1.2), random.uniform(-1.2, 1.2)
+# out_perceptron.weight[0], out_perceptron.weight[1] = -1.2, 1.1
+# out_perceptron.threshold = 0.3
 print("output layer are ", out_perceptron.weight, out_perceptron.threshold)
 
 ep = int(input("Enter # of epochs\n"))

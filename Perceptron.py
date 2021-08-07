@@ -2,10 +2,6 @@ import random
 import functions
 
 
-def my_formatter(num):
-    return float('{0:.3f}'.format(num))
-
-
 class Perceptron:
     def __init__(self):
         self.In = [0]
@@ -36,6 +32,6 @@ class Perceptron:
         for i in range(len(self.In)):
             big_X += self.In[i] * self.weight[i]
         big_X += self.threshold * self.wIn
-        big_X = my_formatter(big_X)
-        self.out = my_formatter(self.activation_fun(big_X))
-        print(f'big_x = {big_X}, out = {self.out}')
+        big_X = functions.my_formatter(big_X)
+        self.out = functions.my_formatter(self.activation_fun(big_X))
+        print(f'big_X = {big_X}, out = {self.out}')

@@ -19,3 +19,7 @@ def ReLU(x):
 
 def linear(x):
     return x
+
+
+def my_formatter(num):
+    return float('{0:.3f}'.format(num))

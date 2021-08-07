@@ -1,16 +1,42 @@
 from Perceptron import Perceptron
+from functions import *
 
 
-def my_formatter(num):
-    return float('{0:.3f}'.format(num))
+def calculate(w1, x1, w2, x2, threshold, func):
+    test_perceptron = Perceptron()
+    test_perceptron.add_input()
+    test_perceptron.threshold = threshold
+    test_perceptron.In[0] = x1
+    test_perceptron.In[1] = x2
+    test_perceptron.weight[0] = w1
+    test_perceptron.weight[1] = w2
+    if func == 'step':
+        test_perceptron.activation_fun = step
+    elif func == 'linear':
+        test_perceptron.activation_fun = linear
+    elif func == 'sigmoid':
+        test_perceptron.activation_fun = sigmoid
+    elif func == 'tanh':
+        test_perceptron.activation_fun = tanh
+    elif func == 'step':
+        test_perceptron.activation_fun = step
+    test_perceptron.get_output()
+    return test_perceptron.out
 
 
-def learn(in_data, out_data):
+def learn(in_data, out_data, ep, alpha, func):
     p = Perceptron()
     p.add_input()
-
-    ep = int(input('Enter # of epochs\n'))
-    alpha = float(input('Enter learning rate\n'))
+    if func == 'step':
+        p.activation_fun = step
+    elif func == 'linear':
+        p.activation_fun = linear
+    elif func == 'sigmoid':
+        p.activation_fun = sigmoid
+    elif func == 'tanh':
+        p.activation_fun = tanh
+    elif func == 'step':
+        p.activation_fun = step
 
     for epoch in range(ep):
         print(f'Epoch # {epoch + 1}')
@@ -33,19 +59,16 @@ def learn(in_data, out_data):
                 print(f'Weight is updated by, {my_formatter(p.weight[j]-tmp)}, so weight[{j}] = {p.weight[j]}')
                 print(f'New threshold = {p.threshold}')
 
-        MSE = 0.0
+        mean_square_error = 0.0
         for error in errors:
-            MSE += error
-        MSE /= 4
-        MSE = my_formatter(MSE)
+            mean_square_error += error
+        mean_square_error /= 4
+        mean_square_error = my_formatter(mean_square_error)
         print(f'errors = {errors}')
         errors.clear()
-        print(f'MSE = {MSE}, epoch = {epoch + 1}')
-        if MSE <= 0.0001:
+        print(f'mean_square_error = {mean_square_error}, epoch = {epoch + 1}')
+        if mean_square_error <= 0.0001:
             break
         print(f'Threshold = {p.threshold}\n')
 
-    return p.weight[0], p.weight[1]
-
-
-# print(tuple(learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 0, 0, 1])))
+    return p.weight[0], p.weight[1], p.threshold
