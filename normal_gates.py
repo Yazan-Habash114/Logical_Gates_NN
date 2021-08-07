@@ -20,6 +20,7 @@ def calculate(w1, x1, w2, x2, threshold, func):
         test_perceptron.activation_fun = tanh
     elif func == 'step':
         test_perceptron.activation_fun = step
+    print('\n\nTesting Process')
     test_perceptron.get_output()
     return test_perceptron.out
 
