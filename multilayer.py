@@ -3,7 +3,16 @@ from functions import *
 import random
 
 
-def learn(in_data, out_data, ep, alpha, func_output, func_hidden):
+def calculate(weights_hidden_ml, weights_out_ml, thresholds_ml, x1, x2, func_h, func_out):
+    func_h = determine_activation_function(func_h)
+    func_out = determine_activation_function(func_out)
+    y1 = my_formatter(func_h(x1 * weights_hidden_ml[0] + x2 * weights_hidden_ml[1] - thresholds_ml[0]))
+    y2 = my_formatter(func_h(x1 * weights_hidden_ml[2] + x2 * weights_hidden_ml[3] - thresholds_ml[1]))
+    y5 = my_formatter(func_out(y1 * weights_out_ml[0] + y2 * weights_out_ml[1] - thresholds_ml[2]))
+    return y5
+
+
+def learn(in_data, out_data, ep, alpha, func_hidden, func_output):
     delta_w_out = []
     delta_w_hidden = []
     delta_threshold = []
@@ -82,5 +91,18 @@ def learn(in_data, out_data, ep, alpha, func_output, func_hidden):
             hidden_layer[0].threshold += delta_threshold[1]
             hidden_layer[1].threshold += delta_threshold[2]
 
+    weights_hidden = list()
+    weights_out = list()
+    thresholds = list()
+    for h in hidden_layer:
+        for j in range(len(h.weight)):
+            weights_hidden.append(h.weight[j])
 
-learn([(0, 0), (0, 1), (1, 0), (1, 1)], [1, 0, 0, 1], 5000, 0.14, 'tanh', 'tanh')
+    for w in range(len(out_perceptron.weight)):
+        weights_out.append(out_perceptron.weight[w])
+
+    thresholds.append(hidden_layer[0].threshold)
+    thresholds.append(hidden_layer[1].threshold)
+    thresholds.append(out_perceptron.threshold)
+
+    return weights_hidden, weights_out, thresholds

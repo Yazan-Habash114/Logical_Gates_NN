@@ -4,6 +4,7 @@ from PIL import ImageTk, Image
 from canvas import show_line
 import tkinter as tk
 import normal_gates as ng
+import multilayer as ml
 
 
 title_font = ('Comic Sans MS', 30)
@@ -18,37 +19,57 @@ W2 = 0.0
 THRESHOLD = 0.0
 CALCULATED_VALUE = -1.0
 
-
-def testing(x1, x2, func, result):
-    global W1, W2, THRESHOLD, CALCULATED_VALUE
-    CALCULATED_VALUE = ng.calculate(W1, int(x1.get()), W2, int(x2.get()), THRESHOLD, func.get())
-    result.config(text=str(CALCULATED_VALUE))
+WEIGHTS_HIDDEN_ML = None
+WEIGHTS_OUT_ML = None
+THRESHOLDS_ML = None
 
 
-def start_learning(epochs, alpha, func):
+def testing(x1, x2, func_h, func_out, result):
+    global selected, CALCULATED_VALUE
+    if 0 <= selected <= 3:
+        global W1, W2, THRESHOLD
+        CALCULATED_VALUE = ng.calculate(W1, int(x1.get()), W2, int(x2.get()), THRESHOLD, func_out.get())
+        result.config(text=str(CALCULATED_VALUE))
+    else:
+        global WEIGHTS_HIDDEN_ML, WEIGHTS_OUT_ML, THRESHOLDS_ML
+        CALCULATED_VALUE = ml.calculate(WEIGHTS_HIDDEN_ML, WEIGHTS_OUT_ML, THRESHOLDS_ML, int(x1.get()),
+                                        int(x2.get()), func_h.get(), func_out.get())
+        result.config(text=str(CALCULATED_VALUE))
+
+
+def start_learning(epochs, alpha, func_h, func_out):
     w1, w2, threshold = 0.0, 0.0, 0.0
+    global WEIGHTS_HIDDEN_ML, WEIGHTS_OUT_ML, THRESHOLDS_ML
     if gates_dict[selected] == 'AND':
-        w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 0, 0, 1], epochs, alpha, func)
+        w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 0, 0, 1], epochs, alpha, func_out)
     elif gates_dict[selected] == 'NAND':
-        w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [1, 1, 1, 0], epochs, alpha, func)
+        w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [1, 1, 1, 0], epochs, alpha, func_out)
     elif gates_dict[selected] == 'OR':
-        w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 1, 1, 1], epochs, alpha, func)
+        w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 1, 1, 1], epochs, alpha, func_out)
     elif gates_dict[selected] == 'NOR':
-        w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [1, 0, 0, 0], epochs, alpha, func)
+        w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [1, 0, 0, 0], epochs, alpha, func_out)
+    elif gates_dict[selected] == 'XOR':
+        WEIGHTS_HIDDEN_ML, WEIGHTS_OUT_ML, THRESHOLDS_ML = ml.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 1, 1, 0],
+                                                                    epochs, alpha, func_h, func_out)
+    elif gates_dict[selected] == 'XNOR':
+        WEIGHTS_HIDDEN_ML, WEIGHTS_OUT_ML, THRESHOLDS_ML = ml.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [1, 0, 0, 1],
+                                                    epochs, alpha, func_h, func_out)
+
     print(w1, w2, threshold)
     global W1, W2, THRESHOLD
     W1 = w1
     W2 = w2
     THRESHOLD = threshold
-    show_line(w1, w2, threshold)
+    # show_line(w1, w2, threshold)
 
 
-def get_inputs(ep, lr, combo):
+def get_inputs(ep, lr, combo_hidden, combo_out):
     epochs = int(ep.get())
     learning_rate = float(lr.get())
-    activation_function = combo.get()
+    activation_function_hidden = combo_hidden.get()
+    activation_function_out = combo_out.get()
     if 0 < learning_rate <= 1:
-        start_learning(epochs, learning_rate, activation_function)
+        start_learning(epochs, learning_rate, activation_function_hidden, activation_function_out)
     else:
         return
 
@@ -162,7 +183,7 @@ def run():
     combo_hidden.grid(column=1, row=3)
 
     Button(inputs, text='Learn', font=my_font2, padx=22, cursor='hand2', bg='#0abda0',
-           command=lambda: get_inputs(ep, lr, combo_output)).grid(column=1, row=4, pady=5)
+           command=lambda: get_inputs(ep, lr, combo_hidden, combo_output)).grid(column=1, row=4, pady=5)
 
     inputs.pack()
     fence.grid(column=0, row=0)
@@ -184,7 +205,7 @@ def run():
     result = Label(testing_input, fg='black', width=13, borderwidth=1, relief='solid')
     result.grid(column=1, row=2)
     Button(testing_input, text='Test', font=my_font2, padx=30, cursor='hand2', bg='#0abda0',
-           command=lambda: testing(x1, x2, combo_output, result)).grid(column=1, row=3, pady=5)
+           command=lambda: testing(x1, x2, combo_hidden, combo_output, result)).grid(column=1, row=3, pady=5)
 
     testing_input.pack()
 
