@@ -157,7 +157,7 @@ def run():
 
     Label(inputs, text='Activation function(Hidden):', font=my_font2).grid(column=0, row=3)
     combo_hidden = ttk.Combobox(inputs, width=12, textvariable=tk.StringVar(), state='readonly')
-    combo_hidden['values'] = ('tanh', 'sigmoid', 'ReLU', 'step', 'linear')
+    combo_hidden['values'] = ('tanh', 'sigmoid', 'ReLU', 'linear')
     combo_hidden.current(1)
     combo_hidden.grid(column=1, row=3)
 
