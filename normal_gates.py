@@ -10,16 +10,7 @@ def calculate(w1, x1, w2, x2, threshold, func):
     test_perceptron.In[1] = x2
     test_perceptron.weight[0] = w1
     test_perceptron.weight[1] = w2
-    if func == 'step':
-        test_perceptron.activation_fun = step
-    elif func == 'linear':
-        test_perceptron.activation_fun = linear
-    elif func == 'sigmoid':
-        test_perceptron.activation_fun = sigmoid
-    elif func == 'tanh':
-        test_perceptron.activation_fun = tanh
-    elif func == 'step':
-        test_perceptron.activation_fun = step
+    test_perceptron.activation_fun = determine_activation_function(func)
     print('\n\nTesting Process')
     test_perceptron.get_output()
     return test_perceptron.out
@@ -28,16 +19,7 @@ def calculate(w1, x1, w2, x2, threshold, func):
 def learn(in_data, out_data, ep, alpha, func):
     p = Perceptron()
     p.add_input()
-    if func == 'step':
-        p.activation_fun = step
-    elif func == 'linear':
-        p.activation_fun = linear
-    elif func == 'sigmoid':
-        p.activation_fun = sigmoid
-    elif func == 'tanh':
-        p.activation_fun = tanh
-    elif func == 'step':
-        p.activation_fun = step
+    p.activation_fun = determine_activation_function(func)
 
     for epoch in range(ep):
         print(f'Epoch # {epoch + 1}')

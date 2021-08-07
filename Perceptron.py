@@ -20,14 +20,14 @@ class Perceptron:
         print(f'Weight is {self.weight}')
         print(f'Threshold = {self.threshold}')
 
-    def make_input(self):
+    def make_input(self):  # For input perceptrons
         self.wIn = 0
         self.weight = [1]
         self.threshold = 1
         self.activation_fun = functions.linear
         self.out = 0.0
 
-    def get_output(self):
+    def get_output(self):  # Calculate output
         big_X = 0.0
         for i in range(len(self.In)):
             big_X += self.In[i] * self.weight[i]
