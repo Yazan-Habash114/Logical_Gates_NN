@@ -37,6 +37,10 @@ def derv_ReLU(x):
     return 1 if x >= 0 else 0
 
 
+def derv_step(x):
+    return 0
+
+
 def determine_activation_function(name):
     if name == 'step':
         return step
@@ -48,6 +52,19 @@ def determine_activation_function(name):
         return tanh
     elif name == 'ReLU':
         return ReLU
+
+
+def match_derivative(func):
+    if func == step:
+        return derv_step
+    elif func == ReLU:
+        return derv_ReLU
+    elif func == linear:
+        return derv_linear
+    elif func == tanh:
+        return derv_tanh
+    elif func == sigmoid:
+        return derv_sigmoid
 
 
 def my_formatter(num):
