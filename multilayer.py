@@ -13,6 +13,11 @@ def calculate(weights_hidden_ml, weights_out_ml, thresholds_ml, x1, x2, func_h, 
 
 
 def learn(in_data, out_data, ep, alpha, func_hidden, func_output):
+    func_hidden = determine_activation_function(func_hidden)
+    func_output = determine_activation_function(func_output)
+    derv_hidden = match_derivative(func_hidden)
+    derv_output = match_derivative(func_output)
+
     delta_w_out = []
     delta_w_hidden = []
     delta_threshold = []
@@ -25,12 +30,12 @@ def learn(in_data, out_data, ep, alpha, func_hidden, func_output):
     for h in hidden_layer:
         h.add_input()
         h.weight[0], h.weight[1] = random.uniform(-1.2, 1.2), random.uniform(-1.2, 1.2)
-        h.activation_fun = determine_activation_function(func_hidden)  # Select function for hidden
+        h.activation_fun = func_hidden  # Select function for hidden
         print("weights are {0}".format(h.weight), h.threshold)
 
     out_perceptron = Perceptron()
     out_perceptron.add_input()
-    out_perceptron.activation_fun = determine_activation_function(func_output)  # Select function for output
+    out_perceptron.activation_fun = func_output  # Select function for output
     print("output layer are ", out_perceptron.weight, out_perceptron.threshold)
 
     for epoch in range(ep):
@@ -55,12 +60,13 @@ def learn(in_data, out_data, ep, alpha, func_hidden, func_output):
 
             # Calculate Error
             e = out_data[perceptron] - out_perceptron.out
-            print("actual output is {0} desired output {1} error {2}".format(out_perceptron.out, out_data[perceptron], e))
+            print("actual output is {0} desired output {1} error {2}".format(out_perceptron.out,
+                                                                             out_data[perceptron], e))
 
             # **********************************************************************************
+
             # Back-Propagation process
-            # gradient_output = out_perceptron.out * (1 - out_perceptron.out) * e
-            gradient_output = (1 - out_perceptron.out ** 2) * e
+            gradient_output = derv_output(out_perceptron.out) * e
             for w in range(len(out_perceptron.weight)):  # Delta_w for each weight
                 delta_w_out.append(alpha * out_perceptron.In[w] * gradient_output)
 
@@ -68,10 +74,7 @@ def learn(in_data, out_data, ep, alpha, func_hidden, func_output):
 
             # Calculate delta_w for each weight in the hidden layer
             for h in range(len(hidden_layer)):
-                # gradient_hidden = hidden_layer[h].out * (1 - hidden_layer[h].out) * \
-                #                   (gradient_output * out_perceptron.weight[h])
-                gradient_hidden = (1 - hidden_layer[h].out ** 2) * \
-                                  (gradient_output * out_perceptron.weight[h])
+                gradient_hidden = derv_hidden(hidden_layer[h].out) * (gradient_output * out_perceptron.weight[h])
                 for j in range(len(hidden_layer[h].weight)):
                     delta_w_hidden.append(alpha * hidden_layer[h].In[j] * gradient_hidden)
                 delta_threshold.append(alpha * hidden_layer[h].wIn * gradient_hidden)
