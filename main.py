@@ -4,7 +4,6 @@ from PIL import ImageTk, Image
 from canvas import show_line
 import tkinter as tk
 import normal_gates as ng
-import math
 
 
 title_font = ('Comic Sans MS', 30)
@@ -17,7 +16,7 @@ gates_dict = {0: 'AND', 1: 'NAND', 2: 'OR', 3: 'NOR', 4: 'XOR', 5: 'XNOR'}
 W1 = 0.0
 W2 = 0.0
 THRESHOLD = 0.0
-CALCULATED_VALUE = math.inf
+CALCULATED_VALUE = -1.0
 
 
 def testing(x1, x2, func, result):
