@@ -15,7 +15,7 @@ def find_points(w1, w2, threshold):
     return point1, point2
 
 
-def show_line(w1, w2, threshold):
+def show_line(weights, thresholds):
     window = Tk()
     window.title('Cartesian Plane')
     window.resizable(False, False)
@@ -30,27 +30,15 @@ def show_line(w1, w2, threshold):
     plane.create_text(380, 175, anchor='w', font='Purisa', text='1')  # on y = x axis
     plane.create_text(390, 440, anchor='w', font='Purisa', text='1')  # on the x-axis
 
+    # Put points on the plane
     plane.create_oval(95, 414, 105, 430, fill='#0abda0')  # Origin point
     plane.create_oval(95, 170, 105, 186, fill='#0abda0')  # On the y-axis
     plane.create_oval(390, 414, 400, 430, fill='#0abda0')  # On the x-axis
     plane.create_oval(390, 170, 400, 186, fill='#0abda0')  # On the y = x axis
 
-    point1, point2 = find_points(w1, w2, threshold)
-
-    # plane.create_text(point2[0], point2[1], anchor='w', text='Test1-Y')
-    # plane.create_text(point1[0], point1[1], anchor='w', text='Test1-X')
-    plane.create_line(point2[0], point2[1], point1[0], point1[1])
-
-    # plane.create_line(50, 175, 50, 420)
-    # plane.create_line(100, 440, 400, 440)
-
-    # plane.create_text(100, 261, anchor='w', text='Test1-Y')
-    # plane.create_text(297, 420, anchor='w', text='Test1-X')
-    # plane.create_line(100, 261, 297, 420)
-    #
-    # plane.create_text(100, 28, anchor='w', text='Test2-Y')
-    # plane.create_text(467, 420, anchor='w', text='Test2-X')
-    # plane.create_line(100, 28, 467, 420)
+    for loop in range(int(len(weights) / 2)):
+        point1, point2 = find_points(weights[2 * loop], weights[2 * loop + 1], thresholds[loop])
+        plane.create_line(point2[0], point2[1], point1[0], point1[1])
 
     plane.pack()
 
