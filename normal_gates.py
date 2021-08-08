@@ -2,6 +2,9 @@ from Perceptron import Perceptron
 from functions import *
 
 
+mean_square_error = 0.0
+
+
 def calculate(w1, x1, w2, x2, threshold, func):
     test_perceptron = Perceptron()
     test_perceptron.add_input()
@@ -42,7 +45,7 @@ def learn(in_data, out_data, ep, alpha, func):
                 print(f'Weight is updated by, {my_formatter(p.weight[j]-tmp)}, so weight[{j}] = {p.weight[j]}')
                 print(f'New threshold = {p.threshold}')
 
-        mean_square_error = 0.0
+        global mean_square_error
         for error in errors:
             mean_square_error += error
         mean_square_error /= 4
