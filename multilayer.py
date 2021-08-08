@@ -13,6 +13,7 @@ def calculate(weights_hidden_ml, weights_out_ml, thresholds_ml, x1, x2, func_h, 
 
 
 def learn(in_data, out_data, ep, alpha, func_hidden, func_output):
+    # Determine the function and its derivative to be used
     func_hidden = determine_activation_function(func_hidden)
     func_output = determine_activation_function(func_output)
     derv_hidden = match_derivative(func_hidden)
@@ -94,6 +95,7 @@ def learn(in_data, out_data, ep, alpha, func_hidden, func_output):
             hidden_layer[0].threshold += delta_threshold[1]
             hidden_layer[1].threshold += delta_threshold[2]
 
+    # Save weights and thresholds to return them
     weights_hidden = list()
     weights_out = list()
     thresholds = list()

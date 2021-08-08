@@ -14,11 +14,13 @@ my_font2 = ('Comic Sans MS', 10)
 selected = 0
 gates_dict = {0: 'AND', 1: 'NAND', 2: 'OR', 3: 'NOR', 4: 'XOR', 5: 'XNOR'}
 
+# For normal gates
 W1 = 0.0
 W2 = 0.0
 THRESHOLD = 0.0
 CALCULATED_VALUE = -1.0
 
+# For XOR and XNOR gates
 WEIGHTS_HIDDEN_ML = None
 WEIGHTS_OUT_ML = None
 THRESHOLDS_ML = None
@@ -30,6 +32,7 @@ def testing(x1, x2, func_h, func_out, result):
         global W1, W2, THRESHOLD
         CALCULATED_VALUE = ng.calculate(W1, int(x1.get()), W2, int(x2.get()), THRESHOLD, func_out.get())
         result.config(text=str(CALCULATED_VALUE))
+
     else:
         global WEIGHTS_HIDDEN_ML, WEIGHTS_OUT_ML, THRESHOLDS_ML
         CALCULATED_VALUE = ml.calculate(WEIGHTS_HIDDEN_ML, WEIGHTS_OUT_ML, THRESHOLDS_ML, int(x1.get()),
@@ -38,29 +41,34 @@ def testing(x1, x2, func_h, func_out, result):
 
 
 def start_learning(epochs, alpha, func_h, func_out):
-    w1, w2, threshold = 0.0, 0.0, 0.0
-    global WEIGHTS_HIDDEN_ML, WEIGHTS_OUT_ML, THRESHOLDS_ML
-    if gates_dict[selected] == 'AND':
-        w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 0, 0, 1], epochs, alpha, func_out)
-    elif gates_dict[selected] == 'NAND':
-        w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [1, 1, 1, 0], epochs, alpha, func_out)
-    elif gates_dict[selected] == 'OR':
-        w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 1, 1, 1], epochs, alpha, func_out)
-    elif gates_dict[selected] == 'NOR':
-        w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [1, 0, 0, 0], epochs, alpha, func_out)
-    elif gates_dict[selected] == 'XOR':
-        WEIGHTS_HIDDEN_ML, WEIGHTS_OUT_ML, THRESHOLDS_ML = ml.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 1, 1, 0],
-                                                                    epochs, alpha, func_h, func_out)
-    elif gates_dict[selected] == 'XNOR':
-        WEIGHTS_HIDDEN_ML, WEIGHTS_OUT_ML, THRESHOLDS_ML = ml.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [1, 0, 0, 1],
-                                                    epochs, alpha, func_h, func_out)
+    if 0 <= selected <= 3:
+        w1, w2, threshold = 0.0, 0.0, 0.0
+        if gates_dict[selected] == 'AND':
+            w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 0, 0, 1], epochs, alpha, func_out)
+        elif gates_dict[selected] == 'NAND':
+            w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [1, 1, 1, 0], epochs, alpha, func_out)
+        elif gates_dict[selected] == 'OR':
+            w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 1, 1, 1], epochs, alpha, func_out)
+        elif gates_dict[selected] == 'NOR':
+            w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [1, 0, 0, 0], epochs, alpha, func_out)
+        print(w1, w2, threshold)
+        global W1, W2, THRESHOLD
+        W1 = w1
+        W2 = w2
+        THRESHOLD = threshold
+        show_line([w1, w2], [threshold])
 
-    print(w1, w2, threshold)
-    global W1, W2, THRESHOLD
-    W1 = w1
-    W2 = w2
-    THRESHOLD = threshold
-    # show_line(w1, w2, threshold)
+    else:
+        global WEIGHTS_HIDDEN_ML, WEIGHTS_OUT_ML, THRESHOLDS_ML
+        if gates_dict[selected] == 'XOR':
+            WEIGHTS_HIDDEN_ML, WEIGHTS_OUT_ML, THRESHOLDS_ML = ml.learn([(0, 0), (0, 1), (1, 0), (1, 1)],
+                                                                        [0, 1, 1, 0], epochs, alpha,
+                                                                        func_h, func_out)
+        elif gates_dict[selected] == 'XNOR':
+            WEIGHTS_HIDDEN_ML, WEIGHTS_OUT_ML, THRESHOLDS_ML = ml.learn([(0, 0), (0, 1), (1, 0), (1, 1)],
+                                                                        [1, 0, 0, 1], epochs, alpha,
+                                                                        func_h, func_out)
+        show_line(WEIGHTS_HIDDEN_ML, THRESHOLDS_ML)
 
 
 def get_inputs(ep, lr, combo_hidden, combo_out):
@@ -70,7 +78,7 @@ def get_inputs(ep, lr, combo_hidden, combo_out):
     activation_function_out = combo_out.get()
     if 0 < learning_rate <= 1:
         start_learning(epochs, learning_rate, activation_function_hidden, activation_function_out)
-    else:
+    else:  # Invalid learning rate
         return
 
 
@@ -81,7 +89,7 @@ def change_frame_colour(frames, index):
     frames[selected].config(bd=0)
     frames[selected].grid(column=selected, row=0, padx=4, pady=4)
 
-    # Select new selection
+    # Select the new selection
     selected = index
     frames[index].grid_forget()
     frames[index].config(bd=4, bg='#0abda0')
@@ -96,7 +104,7 @@ def run():
     root_window.call('wm', 'iconphoto', root_window.w, PhotoImage(file='Images/icon.png'))
     root_window.resizable(False, False)
 
-    # Instructions
+    # Instructions for GUI
     main_label = Label(bg='#d4dca9')
 
     title = Label(main_label, padx=185, pady=10, text='Logical Gates NN', fg='#595775', bg='#ebf2ea', font=title_font)
@@ -194,11 +202,15 @@ def run():
 
     testing_input = Frame(testing_area, padx=5, pady=5)
     Label(testing_input, text='X1 = ', font=my_font2).grid(column=0, row=0)
-    x1 = Entry(testing_input, fg='black', width=15)
+    x1 = ttk.Combobox(testing_input, width=12, textvariable=tk.StringVar(), state='readonly')
+    x1['values'] = ('0', '1')
+    x1.current(0)
     x1.grid(column=1, row=0)
 
     Label(testing_input, text='X2 = ', font=my_font2).grid(column=0, row=1)
-    x2 = Entry(testing_input, fg='black', width=15)
+    x2 = ttk.Combobox(testing_input, width=12, textvariable=tk.StringVar(), state='readonly')
+    x2['values'] = ('0', '1')
+    x2.current(0)
     x2.grid(column=1, row=1)
 
     Label(testing_input, text='Result = ', font=my_font2).grid(column=0, row=2)
