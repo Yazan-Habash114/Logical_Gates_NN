@@ -40,7 +40,7 @@ def testing(x1, x2, func_h, func_out, result):
         result.config(text=str(CALCULATED_VALUE))
 
 
-def start_learning(epochs, alpha, func_h, func_out):
+def start_learning(epochs, alpha, func_h, func_out, mse_label):
     if 0 <= selected <= 3:
         w1, w2, threshold = 0.0, 0.0, 0.0
         if gates_dict[selected] == 'AND':
@@ -51,11 +51,13 @@ def start_learning(epochs, alpha, func_h, func_out):
             w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [0, 1, 1, 1], epochs, alpha, func_out)
         elif gates_dict[selected] == 'NOR':
             w1, w2, threshold = ng.learn([(0, 0), (0, 1), (1, 0), (1, 1)], [1, 0, 0, 0], epochs, alpha, func_out)
-        print(w1, w2, threshold)
+
+        print(f'w1 = {w1}, w2 = {w2}, threshold = {threshold}')
         global W1, W2, THRESHOLD
         W1 = w1
         W2 = w2
         THRESHOLD = threshold
+        mse_label.config(text=f'{ng.mean_square_error}')
         show_line([w1, w2], [threshold])
 
     else:
@@ -68,16 +70,17 @@ def start_learning(epochs, alpha, func_h, func_out):
             WEIGHTS_HIDDEN_ML, WEIGHTS_OUT_ML, THRESHOLDS_ML = ml.learn([(0, 0), (0, 1), (1, 0), (1, 1)],
                                                                         [1, 0, 0, 1], epochs, alpha,
                                                                         func_h, func_out)
+        mse_label.config(text=f'{ml.mean_square_error}')
         show_line(WEIGHTS_HIDDEN_ML, THRESHOLDS_ML)
 
 
-def get_inputs(ep, lr, combo_hidden, combo_out):
+def get_inputs(ep, lr, combo_hidden, combo_out, mse_label):
     epochs = int(ep.get())
     learning_rate = float(lr.get())
     activation_function_hidden = combo_hidden.get()
     activation_function_out = combo_out.get()
     if 0 < learning_rate <= 1:
-        start_learning(epochs, learning_rate, activation_function_hidden, activation_function_out)
+        start_learning(epochs, learning_rate, activation_function_hidden, activation_function_out, mse_label)
     else:  # Invalid learning rate
         return
 
@@ -178,20 +181,26 @@ def run():
     lr = Entry(inputs, fg='black', width=15)
     lr.grid(column=1, row=1)
 
-    Label(inputs, text='Activation function(Output):', font=my_font2).grid(column=0, row=2)
+    Label(inputs, text='MSE = ', font=my_font2).grid(column=0, row=2)
+    border_color = Frame(inputs, background='#999')
+    mse_label = Label(border_color, fg='black', width=13, bg='white', text='0.0', bd=0)
+    mse_label.pack(padx=1, pady=1)
+    border_color.grid(column=1, row=2)
+
+    Label(inputs, text='Activation function(Output):', font=my_font2).grid(column=0, row=3)
     combo_output = ttk.Combobox(inputs, width=12, textvariable=tk.StringVar(), state='readonly')
     combo_output['values'] = ('tanh', 'sigmoid', 'ReLU', 'step', 'linear')
     combo_output.current(1)
-    combo_output.grid(column=1, row=2)
+    combo_output.grid(column=1, row=3)
 
-    Label(inputs, text='Activation function(Hidden):', font=my_font2).grid(column=0, row=3)
+    Label(inputs, text='Activation function(Hidden):', font=my_font2).grid(column=0, row=4)
     combo_hidden = ttk.Combobox(inputs, width=12, textvariable=tk.StringVar(), state='readonly')
     combo_hidden['values'] = ('tanh', 'sigmoid', 'ReLU', 'linear')
     combo_hidden.current(1)
-    combo_hidden.grid(column=1, row=3)
+    combo_hidden.grid(column=1, row=4)
 
     Button(inputs, text='Learn', font=my_font2, padx=22, cursor='hand2', bg='#0abda0',
-           command=lambda: get_inputs(ep, lr, combo_hidden, combo_output)).grid(column=1, row=4, pady=5)
+           command=lambda: get_inputs(ep, lr, combo_hidden, combo_output, mse_label)).grid(column=1, row=5, pady=5)
 
     inputs.pack()
     fence.grid(column=0, row=0)
@@ -214,7 +223,7 @@ def run():
     x2.grid(column=1, row=1)
 
     Label(testing_input, text='Result = ', font=my_font2).grid(column=0, row=2)
-    result = Label(testing_input, fg='black', width=13, borderwidth=1, relief='solid')
+    result = Label(testing_input, fg='black', width=13, borderwidth=1, relief='solid', bg='white')
     result.grid(column=1, row=2)
     Button(testing_input, text='Test', font=my_font2, padx=30, cursor='hand2', bg='#0abda0',
            command=lambda: testing(x1, x2, combo_hidden, combo_output, result)).grid(column=1, row=3, pady=5)

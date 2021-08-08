@@ -8,7 +8,7 @@ class Perceptron:
         self.wIn = -1
         self.weight = [random.random() - 0.5]  # So weight is in (-0.5, 0.5)
         self.threshold = 2 * random.random() - 1  # So weight is in (-1, 1)
-        self.activation_fun = functions.step  # Best are (Step, Sigmoid), ReLU is acceptable!
+        self.activation_fun = functions.step  # Best are (Step, Sigmoid), ReLU is acceptable when alpha is low
         self.out = 0.0
 
     def add_input(self):

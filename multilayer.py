@@ -3,6 +3,9 @@ from functions import *
 import random
 
 
+mean_square_error = 0.0
+
+
 def calculate(weights_hidden_ml, weights_out_ml, thresholds_ml, x1, x2, func_h, func_out):
     func_h = determine_activation_function(func_h)
     func_out = determine_activation_function(func_out)
@@ -41,6 +44,7 @@ def learn(in_data, out_data, ep, alpha, func_hidden, func_output):
 
     for epoch in range(ep):
         print("Epoch # {0}".format(epoch + 1))
+        errors = list()
         for perceptron in range(len(in_data)):  # Get data tuple by tuple
             # Feed forward NN process
             delta_w_out.clear()
@@ -60,10 +64,12 @@ def learn(in_data, out_data, ep, alpha, func_hidden, func_output):
             out_perceptron.get_output()
 
             # Calculate Error
-            e = out_data[perceptron] - out_perceptron.out
+            e = my_formatter(out_data[perceptron] - out_perceptron.out)
+            errors.append(my_formatter(e ** 2))
             print("actual output is {0} desired output {1} error {2}".format(out_perceptron.out,
                                                                              out_data[perceptron], e))
 
+            # **********************************************************************************
             # **********************************************************************************
 
             # Back-Propagation process
@@ -94,6 +100,17 @@ def learn(in_data, out_data, ep, alpha, func_hidden, func_output):
             out_perceptron.threshold += delta_threshold[0]
             hidden_layer[0].threshold += delta_threshold[1]
             hidden_layer[1].threshold += delta_threshold[2]
+
+        global mean_square_error
+        for error in errors:
+            mean_square_error += error
+        mean_square_error /= 4
+        mean_square_error = my_formatter(mean_square_error)
+        print(f'errors = {errors}')
+        errors.clear()
+        print(f'mean_square_error = {mean_square_error}, epoch = {epoch + 1}')
+        if mean_square_error <= 0.0001:
+            break
 
     # Save weights and thresholds to return them
     weights_hidden = list()

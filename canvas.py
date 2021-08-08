@@ -15,13 +15,11 @@ def find_points(w1, w2, threshold):
 
     # Full Line
     y = (-0.33 * -w1 + threshold) / w2
-    print(y)
     y *= 245
     y = 500 - (y + 80)
     point1 = (0, y)
 
     y = (2.33 * -w1 + threshold) / w2
-    print(y)
     y *= 245
     y = 500 - (y + 80)
     point2 = (800, y)
@@ -50,7 +48,7 @@ def show_line(weights, thresholds):
     plane.create_oval(390, 414, 400, 430, fill='#0abda0')  # On the x-axis
     plane.create_oval(390, 170, 400, 186, fill='#0abda0')  # On the y = x axis
 
-    for loop in range(int(len(weights) / 2)):
+    for loop in range(int(len(weights) / 2)):  # Detecting 2 point for each line
         point1, point2 = find_points(weights[2 * loop], weights[2 * loop + 1], thresholds[loop])
         plane.create_line(point2[0], point2[1], point1[0], point1[1])
 
